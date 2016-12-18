@@ -1,0 +1,60 @@
+#!/usr/local/bin/ruby
+
+require 'rubygems'
+require 'plist'
+require 'optparse'
+
+Options = Struct.new(:pretty, :all)
+
+class Parser
+  Version = '0.0.1'
+
+  def self.parse(options)
+    args = Options.new()
+
+    opt_parser = OptionParser.new do |opts|
+      opts.banner = "Usage: active_gfx [options]"
+
+      opts.on("-a", "--all", "Shows all graphics chips instead of only in use") do |a|
+        args.all = a
+      end
+
+      opts.on("-p", "--pretty", "Print the pretty name of graphics card instead of model identifier") do |p|
+        args.pretty = p
+      end
+
+      opts.on("-h", "--help", "Prints this help") do
+        puts opts
+        exit
+      end
+
+      opts.on("-v", "--version", "Show version") do
+        puts Version
+        exit
+      end
+    end
+
+    opt_parser.parse!(options)
+    return args
+  end
+end
+
+options = Parser.parse(ARGV)
+
+# calculate video data
+data = `system_profiler SPDisplaysDataType -xml`
+video_data = Plist.parse_xml(data)
+
+usedGfx = []
+
+for gfxCard in video_data[0]["_items"]
+  displays = gfxCard["spdisplays_ndrvs"]
+  drivesDisplays = !displays.nil? && !displays.empty?
+  field = options.pretty ? "sppci_model" : "_name"
+  if drivesDisplays || options.all
+    name = gfxCard[field]
+    usedGfx += [name]
+  end
+end
+
+puts usedGfx
