@@ -4,9 +4,9 @@ require 'plist'
 require 'optparse'
 
 Options = Struct.new(:pretty, :all)
+Version = '0.1.0'
 
 class Parser
-  Version = '0.0.1'
 
   def self.parse(options)
     args = Options.new()

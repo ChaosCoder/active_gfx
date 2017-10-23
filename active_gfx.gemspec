@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{active_gfx}
-  s.version = "0.0.1"
+  s.version = "0.1.0"
   s.summary = %q{active_gfx shows the graphics card currently in use by you macOS system}
   s.authors = "Andreas Ganske"
   s.email = "active_gfx@chaosspace.de"
